@@ -16,11 +16,24 @@ const server = http.createServer((req, res) => {
 
     // PRODUCTS OVERVIEW
     if (pathName === '/products' || pathName === '/') {
-        res.writeHead(200, { 'Content-type': 'text/html' }) // header response w/ 200 meaning all is OK, with content text/html,
+        res.writeHead(200, { 'Content-type': 'text/html' }) // header response w/ 200 meaning all is OK, with content text/html
+
+        fs.readFile(`${__dirname}/templates/template-overview.html`, 'utf-8', (err, data) => {
+            let overviewOutput = data;
+
+            fs.readFile(`${__dirname}/templates/template-card.html`, 'utf-8', (err, data) => {
+
+                const cardsOutput = laptopData.map(el => replaceTemplate(data, el)).join('');
+                console.log(cardsOutput);
+                overviewOutput = overviewOutput.replace('{%CARDS%}', cardsOutput);
+
+                res.end(overviewOutput);
+            });
+        });
 
     }
 
-    // LAPTOP DETAILS
+    // LAPTOP DETAIL
     else if (pathName === '/laptop' && id < laptopData.length) {
         res.writeHead(200, { 'Content-type': 'text/html' })
 
